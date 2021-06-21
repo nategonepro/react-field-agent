@@ -1,0 +1,55 @@
+.agent {
+    display: flex;
+    justify-content: space-between;
+    background-color: #ddddee;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    flex-wrap: wrap;
+}
+
+.update-agent {
+    background-color: #eeeeff;
+    border-radius: 5px;
+}
+
+.delete-agent {
+    background-color: #eeeeff;
+    width: 100%;
+    border-radius: 5px;
+    margin: 10px 0;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.expand-agent {
+    background-color: #eeeeff;
+    width: 100%;
+    border-radius: 5px;
+    margin: 10px 0;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.agent-controls {
+    display: flex;
+    align-items: center;
+}
+
+.agent-controls > p {
+    background-color: #eeeeff;
+    padding: 10px;
+    margin: 0 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 2px 2px 2px #bbbbcc;
+}
+
+.agent-controls > p:hover {
+    background-color: #bbbbcc;
+}

@@ -1,0 +1,27 @@
+.agent-fields {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.agent-fields > div {
+    width: 30%;
+    margin: 10px;
+    font-size: 1.2rem;
+}
+
+.buttons > button {
+    border-style: none;
+    background-color: #ddddee;
+    padding: 10px;
+    margin: 0 10px;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 2px 2px 2px #bbbbcc;
+}
+
+.buttons button:hover {
+    background-color: #bbbbcc;
+}

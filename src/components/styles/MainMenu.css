@@ -1,0 +1,18 @@
+#cont-menu {
+    background-color: #eeeeff;
+    width: 20%;
+}
+
+.menuitem {
+    background-color: #ddddee;
+    margin: 10px 10px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 2px 2px 2px #bbbbcc;
+}
+
+.menuitem:hover {
+    background-color: #bbbbcc;
+}
