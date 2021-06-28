@@ -1,101 +1,118 @@
 import './App.css';
 
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect
+} from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
+
 import MainMenu from './components/MainMenu';
 import DisplayPanel from './components/DisplayPanel';
+import AuthContext from './components/AuthContext';
 
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 
 function App() {
+  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    fetch("http://localhost:8080/api/agent")
-      .then(response => {
-        if(response.status !== 200){
-          return Promise.reject("Failed to fetch agents");
-        }
-        return response.json();
-      })
-      .then(json => setAgents(json))
-      .catch(console.log);
-  }, []);
-  
-  const [curDisplay, setCurDisplay] = useState(1);
+  const login = (token) => {
+    const {id, sub: username, roles: rolesString} = jwt_decode(token);
+    const roles = rolesString.split(',');
 
-  const [agents, setAgents] = useState([]);
-
-  const addNewAgent = (agent) => {
-    const init = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify(agent)
+    const user = {
+      id,
+      username,
+      roles,
+      token,
+      hasRole(role){
+        return this.roles.includes(role);
+      }
     };
 
-    fetch("http://localhost:8080/api/agent", init)
-      .then(response => {
-        if(response.status !== 201){
-          return Promise.reject("response is not 200 OK");
-        }
-        return response.json();
-      })
-      .then(json => setAgents([...agents, json]))
-      .catch(console.log);
+    setUser(user);
   };
 
-  const updateAgent = (agent) => {
-    const init = {
-      method: "PUT",
+  const authenticate = async (username, password) => {
+    const response = await fetch('http://localhost:5000/authenticate', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(agent)
-    };
+      body: JSON.stringify({
+        username,
+        password
+      })
+    });
 
-    fetch(`http://localhost:8080/api/agent/${agent.agentId}`, init)
-      .then(response => {
-        if(response.status === 404){
-          console.log("Agent not found.");
-        }else if(response.status === 204){
-          console.log("Agent updated!");
-          let newAgents = [...agents];
-          for(let i=0; i<newAgents.length; i++){
-            if(newAgents[i].agentId === agent.agentId){
-              newAgents[i].firstName = agent.firstName;
-              newAgents[i].middleName = agent.middleName;
-              newAgents[i].lastName = agent.lastName;
-              newAgents[i].dob = agent.dob;
-              newAgents[i].heightInInches = agent.heightInInches;
-            }
-          }
-          setAgents(newAgents);
-        }else{
-          console.log(`Agent id ${agent.agentId} update failed with status ${response.status}`);
-        }
-      });
+    if(response.status === 200){
+      const { jwt_token } = await response.json();
+      login(jwt_token);
+    }else if(response.status === 403){
+      throw new Error('Bad username or password');
+    }else{
+      throw new Error('There was a problem logging in...');
+    }
   };
 
-  const deleteById = (agentId) => {
-    fetch(`http://localhost:8080/api/agent/${agentId}`, {method: "DELETE"})
-      .then(response => {
-        if(response.status === 204){
-          setAgents(agents.filter(a => a.agentId !== agentId));
-        }else if(response.status === 404){
-          return Promise.reject("Agent not found.");
-        }else{
-          return Promise.reject(`Delete failed with status: ${response.status}`);
-        }
-      })
-      .catch(console.log);
+  const logout = () => {
+    setUser(null);
+  }
+
+  const auth = {
+    user,
+    login,
+    authenticate,
+    logout
   };
 
   return (
-    <div className="App">
-      <MainMenu setCurDisplay={setCurDisplay}/>
-      <DisplayPanel curDisplay={curDisplay} setCurDisplay={setCurDisplay} agents={agents} addNewAgent={addNewAgent} deleteById={deleteById} updateAgent={updateAgent} />
-    </div>
+    <AuthContext.Provider value={auth}>
+      <div className="App">
+        <Router>
+          <MainMenu/>
+          <Switch>
+            <Route path="/agents/add">
+              {user ?
+                <DisplayPanel curDisplay={2} /> :
+                <Redirect to="/login" />
+              }
+            </Route>
+            <Route path="/agents/edit/:id">
+              {user ?
+                <DisplayPanel curDisplay={2} /> :
+                <Redirect to="/login" />
+              }
+            </Route>
+            <Route path="/agents/delete/:id">
+              {user ?
+                <DisplayPanel curDisplay={2} /> :
+                <Redirect to="/login" />
+              }
+            </Route>
+            <Route path="/agents">
+              {user ?
+                <DisplayPanel curDisplay={1} /> :
+                <Redirect to="/login" />
+              }
+            </Route>
+            <Route path="/login">
+              <DisplayPanel curDisplay={4}/>
+            </Route>
+            <Route path="/register">
+              <DisplayPanel curDisplay={5}/>
+            </Route>
+            <Route exact path="/">
+              <DisplayPanel curDisplay={3}/>
+            </Route>
+            <Route path="*">
+              <DisplayPanel curDisplay={0}/>
+            </Route>
+          </Switch>
+        </Router>
+      </div>
+    </AuthContext.Provider>
   );
 }
 

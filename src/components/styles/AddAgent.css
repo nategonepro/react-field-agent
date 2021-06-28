@@ -22,6 +22,29 @@
     box-shadow: 2px 2px 2px #bbbbcc;
 }
 
-.buttons button:hover {
+.buttons > button:hover {
     background-color: #bbbbcc;
+}
+
+.cancelbutton {
+    border-style: none;
+    background-color: #ddddee;
+    padding: 10px;
+    margin: 0 10px;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 2px 2px 2px #bbbbcc;
+    text-decoration: none;
+    color: black;
+}
+
+.cancelbutton:hover {
+    background-color: #bbbbcc;
+}
+
+.form-login {
+    display: flex;
+    font-size: 1.2rem;
+    justify-content: space-around;
 }

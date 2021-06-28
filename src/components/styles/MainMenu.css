@@ -4,6 +4,9 @@
 }
 
 .menuitem {
+    display: block;
+    color: black;
+    text-decoration: none;
     background-color: #ddddee;
     margin: 10px 10px;
     padding: 10px;
@@ -14,5 +17,14 @@
 }
 
 .menuitem:hover {
+    text-decoration: none;
     background-color: #bbbbcc;
+}
+
+.menuitem:active {
+    text-decoration: none;
+}
+
+.menuitem:visited {
+    text-decoration: none;
 }

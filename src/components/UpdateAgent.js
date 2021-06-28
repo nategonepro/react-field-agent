@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-function UpdateAgent({agent, setExtraMenus,  updateAgent}){
+function UpdateAgent({agent, setExtraMenus, updateAgent}){
 
     const [curAgent, setCurAgent] = useState(agent);
 
